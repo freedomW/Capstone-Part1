@@ -1,34 +1,63 @@
-# Full Project
-Including the use of Github OAuth
-Using the Latest prisma, next.js
-# Database seed
-I did not use database seed as it was too clunky so just did it in SQL script
-# Things to improve on.
-Naming convention
-As I was working on the project, I keep learning new things and different conventions of naming.
-Was trying API and server actions so got into too many trials and error
-Component should be place into better naming folders
-Break down more reused code into components like signin for Github.
-Redoing the routes.ts for better naming conventions
-Redoing the tables to remove unnessary stuff. (Copy pasted and modified from Authjs)
-Rename the tables for better conventions used like Insurance Policies to Policies
-PolicyHolder to Customer
-PolicyAssignment to CustomerPolicies
-doing so I would have started adding empolyee
-to simulate agents
-Assign roles to agent and tie agent to User + Account
-Re-do the middleware.ts to route better
-Better naming for route.ts
-# New things to take note
-prisma 6.6.0 and above will require you to use Output
-I was too lazy to figure out if it can be done on lower level so I kept it in src
-output = "../src/generated/prisma/client"
-auth and auth.config are tied together by ...authConfig not ..authConfig or .authConfig (took me a long while trying to solve this)
-PrismaClient and PrismaAdapter are not using the same thing.
-Due to 6.6.0, I need to use adapter: PrismaAdapter(prisma.$extends({}))
+# Full Project Overview
 
+This project includes the integration of GitHub OAuth and utilizes the latest versions of Prisma and Next.js.
 
+---
 
+## Database Seed
 
+- **Note**: Database seeding was avoided due to its complexity. Instead, SQL scripts were used directly.
 
+---
 
+## Areas for Improvement
+
+While working on this project, I identified several aspects to refine:
+
+### Naming Conventions
+- Improve consistency in naming conventions, as I learned new standards during development.
+- Refactor `routes.ts` for better naming conventions.
+- Rename database tables for clarity and consistency:
+  - `Insurance Policies` → `Policies`
+  - `PolicyHolder` → `Customer`
+  - `PolicyAssignment` → `CustomerPolicies`
+
+### Folder Structure
+- Organize components into better-structured folders.
+- Break down reusable code into smaller components, such as the GitHub sign-in flow.
+
+### Database Design
+- Reorganize database tables:
+  - Remove unnecessary fields (e.g., those modified from Auth.js).
+  - Add `Employee` table to simulate agents.
+  - Assign roles to agents and link them to `User` and `Account` tables.
+
+### Middleware and Routing
+- Refactor `middleware.ts` for improved routing.
+- Enhance route naming for better readability and maintainability.
+
+---
+
+## Important Notes
+
+### Prisma (Version 6.6.0+)
+- Starting with Prisma 6.6.0, the `output` option must be used. 
+  - Example: `output = "../src/generated/prisma/client"`
+- The generated client file is located in the `src` directory for simplicity.
+
+### Configuration Issues
+- **Auth and Auth Config**:
+  - Ensure `...authConfig` is correctly used, as alternatives like `..authConfig` or `.authConfig` can cause issues.
+- **PrismaClient and PrismaAdapter**:
+  - Note that `PrismaClient` and `PrismaAdapter` are not interchangeable.
+  - Due to Prisma 6.6.0, the adapter requires `PrismaAdapter(prisma.$extends({}))`.
+
+---
+
+## Future Enhancements
+
+Here are some additional ideas to enhance the project further:
+- Assign agents to customers and implement agent roles.
+- Improve the overall structure and maintainability of the codebase:
+  - Revisit `routes.ts` and `middleware.ts` for better routing and naming conventions.
+  - Optimize folder structure and component organization.
