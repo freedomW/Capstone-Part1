@@ -7,6 +7,8 @@ This project includes the integration of GitHub OAuth and utilizes the latest ve
 ## Database Seed
 
 - **Note**: Database seeding was avoided due to its complexity. Instead, SQL scripts were used directly.
+Plan to use view in the future for dashboard to avoid writing full sql script
+Materialize view when prisma fully supports it.
 
 ---
 
