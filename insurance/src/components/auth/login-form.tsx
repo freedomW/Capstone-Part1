@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"; // Ensure Button is imported
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 import {
   Card,
@@ -19,9 +19,8 @@ import { loginSchema } from "@/schemas";
 import { loginUser } from "@/actions/login";
 import { FormError } from "@/components/ui/form-error";
 import { FormSucess } from "../ui/form-success";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { defaultRoute } from "@/routes";
+import { GithubSignInButton } from "@/components/auth/github-signin-button";
 
 export function LoginForm({
   className,
@@ -51,18 +50,15 @@ export function LoginForm({
         })
         .finally(() => {
             setTimeout(() => {
-              window.location.href = defaultRoute;
-            }, 1000); // Redirect after 1 second
+              window.location.href = "/overview";
+            }, 500); // Redirect after 0.5 second
         })
     });
   }
 
-  const onClink = (provider: "github") => {
-    signIn(provider, { callbackUrl: defaultRoute });
-  }
-
 
   return (
+    <div className="flex items-center justify-center min-h-screen">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">🔒Login</CardTitle>
@@ -136,15 +132,14 @@ export function LoginForm({
             </div>
             </form>
           </Form>
-              <Button onClick={()=>onClink("github")} variant="outline" className="w-full mt-6" disabled={isPending}>
-                Sign In with GitHub
-              </Button>
+              <GithubSignInButton className="w-full mt-6" disabled={isPending} />
               <div className="w-full pt-6 pl-6 pr-6 flex items-center justify-between">
-                <Link href="/register" className="w-full text-sm text-blue-500 hover:underline">
+                <Link href="/auth/register" className="w-full text-sm text-blue-500 hover:underline">
                   Don't have an account? Register here
                 </Link>
               </div>
         </CardContent>
       </Card>
+    </div>
   );
 }

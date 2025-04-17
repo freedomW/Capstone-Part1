@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id                   Int              @id @default(autoincrement())
+  policyHolderId       String           @unique
+  email                String
+  firstName            String
+  lastName             String
+  policies             CustomerPolicy[]
+  customerAgentRelations CustomerAgent[]
+  primaryAgentRelation CustomerAgent?   @relation("PrimaryAgentRelation", fields: [primaryAgentRelationId], references: [id])
+  primaryAgentRelationId Int?           @unique
+}
+
+model Policy {
+  id                Int              @id @default(autoincrement())
+  insurancePolicyId String           @unique
+  name              String
+  basePriceSgd      Decimal
+  typeOfPolicy      String
+  assignments       CustomerPolicy[]
+}
+
+model CustomerPolicy {
+  id                Int                 @id @default(autoincrement())
+  policyHolderId    String
+  insurancePolicyId String
+  policy            Policy              @relation(fields: [insurancePolicyId], references: [insurancePolicyId])
+  customer          Customer            @relation(fields: [policyHolderId], references: [policyHolderId])
+  agentAssignments  CustomerPolicyAgent[]
+
+  @@unique([policyHolderId, insurancePolicyId])
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          UserRole        @default(USER)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  accounts      Account[]
+  Authenticator Authenticator[]
+  sessions      Session[]
+  Agent         Agent?
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
+
+enum UserRole {
+  USER
+  AGENT
+  SUPERVISOR
+  ADMIN
+}
+
+model Agent {
+  id                      String                @id @default(cuid())
+  user                    User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                  String                @unique
+  customerAgentRelations  CustomerAgent[]
+  policyAssignments       CustomerPolicyAgent[]
+  supervisorId            String?
+  supervisor              Agent?                @relation("AgentToSupervisor", fields: [supervisorId], references: [id])
+  supervisedAgents        Agent[]               @relation("AgentToSupervisor")
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+}
+
+// Many-to-many relationship between Customer and Agent
+model CustomerAgent {
+  id          Int       @id @default(autoincrement())
+  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId  Int
+  agent       Agent     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  agentId     String
+  isPrimary   Boolean   @default(false)
+  assignedAt  DateTime  @default(now())
+  primaryForCustomer Customer? @relation("PrimaryAgentRelation")
+  
+  @@unique([customerId, agentId])
+}
+
+// Join table for Agent assignments to specific policies
+model CustomerPolicyAgent {
+  id                Int            @id @default(autoincrement())
+  customerPolicy    CustomerPolicy @relation(fields: [customerPolicyId], references: [id], onDelete: Cascade)
+  customerPolicyId  Int
+  agent             Agent          @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  agentId           String
+  assignedAt        DateTime       @default(now())
+  
+  @@unique([customerPolicyId, agentId])
+}

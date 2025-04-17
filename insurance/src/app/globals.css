@@ -48,6 +48,9 @@
   --radius: 0.5rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
+  
+  /* Add transition properties for theme changes */
+  --theme-transition: 0.3s ease-in-out;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
@@ -128,5 +131,31 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Add smooth transition for theme changes */
+  html {
+    transition: background-color var(--theme-transition), 
+                color var(--theme-transition),
+                border-color var(--theme-transition);
+  }
+
+  /* Apply transitions to common UI elements */
+  button, 
+  a,
+  div,
+  nav,
+  input,
+  textarea,
+  select,
+  .card,
+  .badge,
+  .button,
+  .dialog,
+  .popover {
+    transition: background-color var(--theme-transition),
+                color var(--theme-transition),
+                border-color var(--theme-transition),
+                box-shadow var(--theme-transition);
   }
 }

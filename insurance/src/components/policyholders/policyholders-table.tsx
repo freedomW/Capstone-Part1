@@ -48,9 +48,9 @@ const fetchPolicyHolders = async (): Promise<PolicyHolder[]> => {
 
 export const columns: ColumnDef<PolicyHolder>[] = [
   {
-    accessorKey: "policyholderId",
+    accessorKey: "policyHolderId",
     header: "Policy Holder ID",
-    cell: ({ row }) => <div>{row.getValue("policyholderId")}</div>,
+    cell: ({ row }) => <div>{row.getValue("policyHolderId")}</div>,
   },
   {
     accessorKey: "firstName",

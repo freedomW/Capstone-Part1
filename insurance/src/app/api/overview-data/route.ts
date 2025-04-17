@@ -7,19 +7,16 @@ export async function GET() {
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
     let totalPolicyHolders = 0;
     let totalInsurancePolicies = 0;
     let totalAmount: any[] = [];
-    let chartData: any[] = [];
-    
-    try {
-        totalPolicyHolders = await prisma.policyHolder.count();
-        totalInsurancePolicies = await prisma.insurancePolicy.count();
+    let chartData: any[] = [];    try {
+        totalPolicyHolders = await prisma.customer.count();
+        totalInsurancePolicies = await prisma.policy.count();
         totalAmount = await prisma.$queryRaw`
         select sum(ip."basePriceSgd")
-        from "PolicyAssignment" pa
-        join "Capstone1"."InsurancePolicy" ip
+        from "CustomerPolicy" pa
+        join "Policy" ip
         on pa."insurancePolicyId" = ip."insurancePolicyId"
         `;
         chartData = await prisma.$queryRaw`
@@ -27,8 +24,8 @@ export async function GET() {
         ip."insurancePolicyId",
         ip."name",
         sum(ip."basePriceSgd")
-        from "PolicyAssignment" pa
-        join "Capstone1"."InsurancePolicy" ip
+        from "CustomerPolicy" pa
+        join "Policy" ip
         on pa."insurancePolicyId" = ip."insurancePolicyId"
         group by
         ip."insurancePolicyId",ip."name"

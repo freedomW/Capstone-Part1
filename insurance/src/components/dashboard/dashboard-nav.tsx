@@ -4,6 +4,7 @@ import React, { useState } from "react"
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -21,9 +22,11 @@ interface NavProps extends React.HTMLAttributes<HTMLElement> {
 
 export function DashboardNav({ className, items, ...props }: NavProps) {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-
-  const defaultItems = [
+  
+  // Base navigation items available to all authenticated users
+  const baseItems = [
     {
       href: "/overview",
       title: "Overview",
@@ -40,6 +43,17 @@ export function DashboardNav({ className, items, ...props }: NavProps) {
       icon: <Users />,
     },
   ];
+  
+  // Administration link - only visible to users with SUPERVISOR role
+  const adminItem = {
+    href: "/administration",
+    title: "Administration",
+    icon: <Settings />,
+  };
+    // Add the admin item only if the user has SUPERVISOR or ADMIN role
+  const defaultItems = (session?.user?.role === 'SUPERVISOR' || session?.user?.role === 'ADMIN')
+    ? [...baseItems, adminItem]
+    : baseItems;
 
   const navItems = items || defaultItems;
 

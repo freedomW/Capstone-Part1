@@ -7,9 +7,8 @@ export async function GET() {
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
   try {
-    const policies = await prisma.insurancePolicy.findMany();
+    const policies = await prisma.policy.findMany();
 
     return NextResponse.json(policies);
   } catch (error) {
@@ -23,10 +22,9 @@ export async function POST(request: Request) {
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
   const { insurancePolicyId, name, basePriceSgd, typeOfPolicy } = await request.json();
 
-  const exisitingPolicy = await prisma.insurancePolicy.findUnique({
+  const exisitingPolicy = await prisma.policy.findUnique({
     where: { insurancePolicyId },
   });
   if (exisitingPolicy) {
@@ -34,7 +32,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const newPolicy = await prisma.insurancePolicy.create({
+    const newPolicy = await prisma.policy.create({
       data: {
         insurancePolicyId,
         name,

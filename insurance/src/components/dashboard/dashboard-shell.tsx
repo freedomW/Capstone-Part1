@@ -13,7 +13,7 @@ export function DashboardShell({ children, className, ...props }: DashboardShell
       {...props}
     >
       <div
-        className="w-full max-w-4xl p-6 shadow-lg rounded-lg border bg-card"
+        className="w-full max-w-6xl p-6 shadow-lg rounded-lg border bg-card"
         style={{ boxShadow: `0 4px 6px var(--shadow-color)` }}
       >
         {children}

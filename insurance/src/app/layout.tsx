@@ -11,6 +11,7 @@ import { SessionProvider } from "next-auth/react";
 import {auth} from "@/auth";
 import Link from "next/link";
 import { Home } from "lucide-react";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+  
+  // Show dashboard nav only for authenticated users with AGENT, SUPERVISOR or ADMIN roles
+  // This will hide the nav for regular users (e.g., those with no role or USER role)
+  const showDashboardNav = session && 
+    ['AGENT', 'SUPERVISOR', 'ADMIN'].includes(session.user?.role || '');
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -43,24 +50,27 @@ export default async function RootLayout({
               attribute="class"
               defaultTheme="system"
               enableSystem
-              disableTransitionOnChange
             >
+              <Toaster position="bottom-right" richColors />
               
           <div className="w-full grid flex-1 min-h-screen">
-            {session ? (
+            {showDashboardNav ? (
               <DashboardNav />
-            ) : 
+            ) : session ? (
+              // Empty space for users who are signed in but shouldn't see the nav
+              <div></div>
+            ) : (
             <Link href="/" className="fixed top-5 left-4 z-[1000] flex items-center justify-center h-16 w-16 rounded-md bg-background/70 backdrop-blur-md text-foreground">
               <Home className="h-8 w-8" />
             </Link>
-            }
+            )}
             <main className="flex w-full flex-1 flex-col overflow-hidden">
               
               {children}
             </main>
           </div>
-          <div className="fixed top-5 right-4 z-[1000] flex">
-            <ModeToggle className="h-8 w-8 mr-2 flex items-center justify-center rounded-md" />
+          <div className="fixed top-5 right-4 z-[1000] flex items-center gap-3">
+            <ModeToggle className="h-9 w-9 p-0 flex items-center justify-center rounded-md" />
             <SignInButton />
           </div>
           </ThemeProvider>

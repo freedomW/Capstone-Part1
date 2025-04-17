@@ -2,6 +2,12 @@
 
 This project includes the integration of GitHub OAuth and utilizes the latest versions of Prisma and Next.js.
 
+As of when code was written
+"next": "15.2.4",
+"tailwindcss": "^4",
+"prisma": "^6.6.0",
+"next-auth": "^5.0.0-beta.25"
+
 ---
 
 ## Installation Guide
@@ -37,35 +43,29 @@ This guide will help you set up the insurance project on your local machine. The
 
 4. **Initialize database with Prisma**
   ```bash
-  npx prisma db push
+  npx prisma migrate dev
   ```
 
-5. **Run the seed SQL script**
-  - Locate the `Script.sql` file in the project root
-  - Execute it in your PostgreSQL database AFTER Prisma has created the tables:
+5. **Create an admin account**
   ```bash
-  psql -U postgres -d insurance -f script.sql
+  npm run setup-admin
   ```
-  - Note: This script populates the database with initial data needed for the application as requested by the assignment
+  Follow the interactive prompts in the terminal to create your admin account. You'll be asked to provide:
+  - Name
+  - Email address
+  - Password (minimum 8 characters)
 
-6. **Generate Prisma client**
-  ```bash
-  npx prisma generate
-  ```
+  The script will:
+  - Check if an admin account already exists
+  - Create a new admin account or optionally upgrade an existing user to admin role
 
-7. **Start the development server**
+6. **Start the development server**
   ```bash
   npm run dev
   ```
 
-8. **Access the application**
+7. **Access the application**
   Open your browser and navigate to: `http://localhost:3000`
-
-## Database Seed
-
-- **Note**: Database seeding was avoided due to its complexity. Instead, SQL scripts were used directly.
-Plan to use view in the future for dashboard to avoid writing full sql script
-Materialize view when prisma fully supports it.
 
 ---
 
@@ -73,23 +73,9 @@ Materialize view when prisma fully supports it.
 
 While working on this project, I identified several aspects to refine:
 
-### Naming Conventions
-- Improve consistency in naming conventions, as I learned new standards during development.
-- Refactor `routes.ts` for better naming conventions.
-- Rename database tables for clarity and consistency:
-  - `Insurance Policies` → `Policies`
-  - `PolicyHolder` → `Customer`
-  - `PolicyAssignment` → `CustomerPolicies`
-
 ### Folder Structure
 - Organize components into better-structured folders.
 - Break down reusable code into smaller components, such as the GitHub sign-in flow.
-
-### Database Design
-- Reorganize database tables:
-  - Remove unnecessary fields (e.g., those modified from Auth.js).
-  - Add `Employee` table to simulate agents.
-  - Assign roles to agents and link them to `User` and `Account` tables.
 
 ### Middleware and Routing
 - Refactor `middleware.ts` for improved routing.
@@ -97,7 +83,7 @@ While working on this project, I identified several aspects to refine:
 
 ---
 
-## Important Notes
+## Learning Notes
 
 ### Prisma (Version 6.6.0+)
 - Starting with Prisma 6.6.0, the `output` option must be used. 
@@ -106,7 +92,8 @@ While working on this project, I identified several aspects to refine:
 
 ### Configuration Issues
 - **Auth and Auth Config**:
-  - Ensure `...authConfig` is correctly used, as alternatives like `..authConfig` or `.authConfig` can cause issues.
+  - Ensure `...authConfig` is correctly added to auth.ts
+  - Roles need to be define in /types/next-auth.d.ts and instead of using auth.ts for callbacks, it should be done in auth.config.ts to be used in middleware.
 - **PrismaClient and PrismaAdapter**:
   - Note that `PrismaClient` and `PrismaAdapter` are not interchangeable.
   - Due to Prisma 6.6.0, the adapter requires `PrismaAdapter(prisma.$extends({}))`.
@@ -114,9 +101,11 @@ While working on this project, I identified several aspects to refine:
 ---
 
 ## Future Enhancements
+  - Removing credentials verification due to security risk
+  - Replacing with email verification
 
-Here are some additional ideas to enhance the project further:
-- Assign agents to customers and implement agent roles.
-- Improve the overall structure and maintainability of the codebase:
-  - Revisit `routes.ts` and `middleware.ts` for better routing and naming conventions.
-  - Optimize folder structure and component organization.
+## Note to instructors
+  - I did use co-pilot chat to generate codes out of laziness but I gone through every code that was generated to understand them.
+  - Had to use it when the code was too new that I could not find instruction on implementing the latest version of authjs. Took me 1 full day even with co-pilot chat to find the issue of requiring ...authconfig in auth.ts for it to work.
+  - I Started using Co-pilot heavily once I started implementing RBAC which was not required but I wanted to challenge myself to understand more. At this point I was using it to do fillers and instructed it to do front end with partial logic. And asking it to document the changes made.
+  - Also ask it to beautify the instructions above.

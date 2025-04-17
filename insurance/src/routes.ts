@@ -12,8 +12,8 @@ export const publicRoutes = [
  * @type {string[]}
  */
 export const authRoutes = [
-  "/login",
-  "/register",
+  "/auth/login",
+  "/auth/register",
 ];
 
 /**
@@ -24,10 +24,30 @@ export const authRoutes = [
 export const protectedRoutes = [
   "/api/policies",
   "/api/policyholders",
+  "/signout",
+  "/api",
+  "/user-landing"
+];
+
+/**
+ * An array of routes that require agent/supervisor/admin roles
+ * These routes will redirect regular users to the user landing page
+ * @type {string[]}
+ */
+export const dashboardRoutes = [
   "/overview",
   "/policies",
-  "/policyholders",
-  "/signout",
+  "/policyholders"
+];
+
+/**
+ * An array of routes that require admin or supervisor role
+ * These routes will redirect users without proper roles to the unauthorized page
+ * @type {string[]}
+ */
+export const adminRoutes = [
+  "/administration",
+  "/api/administration"
 ];
 
 /**
@@ -37,13 +57,13 @@ export const protectedRoutes = [
 export const defaultRoute = "/overview";
 
 /**
- * Default route after for unauthorized access
- * @type {string[]}
- */
-export const unauthorizedRoute = "/login";
-
-/**
- * Prefix for API routes that require authentication
- * @type {string[]}
+ * API authentication prefix
+ * @type {string}
  */
 export const apiAuthPrefix = "/api";
+
+/**
+ * Default route after for unauthorized access
+ * @type {string}
+ */
+export const unauthorizedRoute = "/auth/login";

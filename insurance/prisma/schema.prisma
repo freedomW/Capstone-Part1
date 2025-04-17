@@ -1,12 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output = "../src/generated/prisma/client"
+  output   = "../src/generated/prisma/client"
 }
 
 datasource db {
@@ -14,32 +8,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model PolicyHolder {
-  id             Int       @id @default(autoincrement()) // Auto-incrementing ID
-  policyHolderId String    @unique                      // Unique string ID
-  email          String
-  firstName      String
-  lastName       String
-  policies       PolicyAssignment[]                    // Relation to PolicyAssignment
+model Customer {
+  id                     Int              @id @default(autoincrement())
+  policyHolderId         String           @unique
+  email                  String
+  firstName              String
+  lastName               String
+  primaryAgentRelationId Int?             @unique
+  primaryAgentRelation   CustomerAgent?   @relation("PrimaryAgentRelation", fields: [primaryAgentRelationId], references: [id])
+  customerAgentRelations CustomerAgent[]
+  policies               CustomerPolicy[]
 }
 
-model InsurancePolicy {
-  id                Int       @id @default(autoincrement()) // Auto-incrementing ID
-  insurancePolicyId String    @unique                      // Unique string ID
+model Policy {
+  id                Int              @id @default(autoincrement())
+  insurancePolicyId String           @unique
   name              String
   basePriceSgd      Decimal
   typeOfPolicy      String
-  assignments       PolicyAssignment[]                    // Relation to PolicyAssignment
+  assignments       CustomerPolicy[]
 }
 
-model PolicyAssignment {
-  id                Int             @id @default(autoincrement()) // Auto-incrementing ID
+model CustomerPolicy {
+  id                Int                   @id @default(autoincrement())
   policyHolderId    String
   insurancePolicyId String
-  policyHolder      PolicyHolder    @relation(fields: [policyHolderId], references: [policyHolderId])
-  insurancePolicy   InsurancePolicy @relation(fields: [insurancePolicyId], references: [insurancePolicyId])
+  policy            Policy                @relation(fields: [insurancePolicyId], references: [insurancePolicyId])
+  customer          Customer              @relation(fields: [policyHolderId], references: [policyHolderId])
+  agentAssignments  CustomerPolicyAgent[]
 
-  @@unique([policyHolderId, insurancePolicyId]) // Composite unique constraint
+  @@unique([policyHolderId, insurancePolicyId])
 }
 
 model User {
@@ -49,15 +47,15 @@ model User {
   emailVerified DateTime?
   password      String?
   image         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  role          UserRole        @default(USER)
   accounts      Account[]
-  sessions      Session[]
-  // Optional for WebAuthn support
+  Agent         Agent?
   Authenticator Authenticator[]
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  sessions      Session[]
 }
- 
+
 model Account {
   userId            String
   type              String
@@ -70,34 +68,30 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
 }
- 
-// Optional for WebAuthn support
+
 model Authenticator {
   credentialID         String  @unique
   userId               String
@@ -107,8 +101,51 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@id([userId, credentialID])
+}
+
+model Agent {
+  id                     String                @id @default(cuid())
+  userId                 String                @unique
+  supervisorId           String?
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  supervisor             Agent?                @relation("AgentToSupervisor", fields: [supervisorId], references: [id])
+  supervisedAgents       Agent[]               @relation("AgentToSupervisor")
+  user                   User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customerAgentRelations CustomerAgent[]
+  policyAssignments      CustomerPolicyAgent[]
+}
+
+model CustomerAgent {
+  id                 Int       @id @default(autoincrement())
+  customerId         Int
+  agentId            String
+  isPrimary          Boolean   @default(false)
+  assignedAt         DateTime  @default(now())
+  primaryForCustomer Customer? @relation("PrimaryAgentRelation")
+  agent              Agent     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  customer           Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, agentId])
+}
+
+model CustomerPolicyAgent {
+  id               Int            @id @default(autoincrement())
+  customerPolicyId Int
+  agentId          String
+  assignedAt       DateTime       @default(now())
+  agent            Agent          @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  customerPolicy   CustomerPolicy @relation(fields: [customerPolicyId], references: [id], onDelete: Cascade)
+
+  @@unique([customerPolicyId, agentId])
+}
+
+enum UserRole {
+  USER
+  AGENT
+  SUPERVISOR
+  ADMIN
 }
