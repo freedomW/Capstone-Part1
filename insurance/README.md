@@ -39,6 +39,19 @@ This guide will help you set up the insurance project on your local machine. The
   GITHUB_ID="your-github-oauth-app-id"
   GITHUB_SECRET="your-github-oauth-app-secret"
   NEXTAUTH_SECRET="your-nextauth-secret"
+
+  # Generate your NEXTAUTH_SECRET using one of these methods:
+  ```bash
+  # Method 1: Using Node.js
+  node -e "console.log(crypto.randomBytes(32).toString('hex'))"
+  
+  # Method 2: Using Auth.js CLI
+  npx auth secret
+  
+  # Method 3: Using OpenSSL
+  openssl rand -base64 32
+  ```
+
   ```
 
 4. **Initialize database with Prisma**
