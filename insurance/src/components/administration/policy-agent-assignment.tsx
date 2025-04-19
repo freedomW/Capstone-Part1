@@ -220,15 +220,15 @@ export default function PolicyAgentAssignmentForm() {
       <div className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Skeleton className="h-5 w-36 mb-2" /> {/* Label skeleton */}
-            <Skeleton className="h-10 w-full" /> {/* Select button skeleton */}
+            <Skeleton className="h-5 w-36 mb-2" />
+            <Skeleton className="h-10 w-full" />
           </div>
           <div className="space-y-2">
-            <Skeleton className="h-5 w-24 mb-2" /> {/* Label skeleton */}
-            <Skeleton className="h-10 w-full" /> {/* Select button skeleton */}
+            <Skeleton className="h-5 w-24 mb-2" />
+            <Skeleton className="h-10 w-full" />
           </div>
         </div>
-        <Skeleton className="h-10 w-full mt-4" /> {/* Button skeleton */}
+        <Skeleton className="h-10 w-full mt-4" />
       </div>
     );
   }
@@ -251,7 +251,8 @@ export default function PolicyAgentAssignmentForm() {
                 <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[500px] p-0">              <Command shouldFilter={false}>
+            <PopoverContent className="w-[500px] p-0">
+              <Command shouldFilter={false}>
                 <CommandInput 
                   placeholder="Search policies by customer, type, or ID..." 
                   value={policySearchQuery}
@@ -302,7 +303,8 @@ export default function PolicyAgentAssignmentForm() {
                 <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[400px] p-0">              <Command shouldFilter={false}>
+            <PopoverContent className="w-[400px] p-0">
+              <Command shouldFilter={false}>
                 <CommandInput 
                   placeholder="Search agents..." 
                   value={agentSearchQuery}

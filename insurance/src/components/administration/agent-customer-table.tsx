@@ -203,7 +203,6 @@ export default function AgentCustomerTable() {
                         Make Primary
                       </Button>
                     )}
-                    {/* Show Remove button only if admin or the supervisor has permission to remove */}
                     {(assignment.canRemove === undefined || assignment.canRemove) && (
                       <Button
                         variant="destructive"

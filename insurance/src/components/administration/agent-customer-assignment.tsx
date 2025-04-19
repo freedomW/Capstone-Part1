@@ -155,19 +155,19 @@ export default function AgentCustomerAssignmentForm() {
       <div className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Skeleton className="h-5 w-24 mb-2" /> {/* Label skeleton */}
-            <Skeleton className="h-10 w-full" /> {/* Select button skeleton */}
+            <Skeleton className="h-5 w-24 mb-2" />
+            <Skeleton className="h-10 w-full" />
           </div>
           <div className="space-y-2">
-            <Skeleton className="h-5 w-24 mb-2" /> {/* Label skeleton */}
-            <Skeleton className="h-10 w-full" /> {/* Select button skeleton */}
+            <Skeleton className="h-5 w-24 mb-2" />
+            <Skeleton className="h-10 w-full" />
           </div>
         </div>
         <div className="flex items-center space-x-2 mt-4">
-          <Skeleton className="h-5 w-5" /> {/* Checkbox skeleton */}
-          <Skeleton className="h-5 w-32" /> {/* Label skeleton */}
+          <Skeleton className="h-5 w-5" />
+          <Skeleton className="h-5 w-32" />
         </div>
-        <Skeleton className="h-10 w-full" /> {/* Button skeleton */}
+        <Skeleton className="h-10 w-full" />
       </div>
     );
   }
@@ -192,7 +192,8 @@ export default function AgentCustomerAssignmentForm() {
                 <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[400px] p-0">              <Command shouldFilter={false}>
+            <PopoverContent className="w-[400px] p-0">
+              <Command shouldFilter={false}>
                 <CommandInput 
                   placeholder="Search customers..." 
                   value={searchQuery}
@@ -241,7 +242,8 @@ export default function AgentCustomerAssignmentForm() {
                 <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[400px] p-0">              <Command shouldFilter={false}>
+            <PopoverContent className="w-[400px] p-0">
+              <Command shouldFilter={false}>
                 <CommandInput 
                   placeholder="Search agents..." 
                   value={agentSearchQuery}

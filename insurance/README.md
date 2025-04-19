@@ -82,13 +82,48 @@ This guide will help you set up the insurance project on your local machine. The
 
 ---
 
+## User Role Hierarchy
+
+The application implements a role-based access control system with the following user levels:
+
+### 👤 Users
+- Newly registered accounts with no system access
+- Require approval to gain agent status
+
+### 👨‍💼 Agents
+- Verified users with basic system access
+- **Permissions:**
+  - View assigned customers
+  - Create new customers (automatically assigned as Primary Agent)
+  - Create new policies for customers
+
+### 👨‍💻 Supervisors
+- Users with elevated access and management capabilities
+- **Permissions:**
+  - Assign customers to agents under their supervision
+  - Assign customer policies to agents under their supervision
+  - Designate primary and secondary agents for customers
+  - Manage agent-customer relationships
+
+### 🔑 Administrators
+- Users with complete system access
+- **Permissions:**
+  - Add or remove supervisors
+  - Approve user role promotions (agent/supervisor/admin)
+  - Assign agents to supervisors
+  - Full access to all system functions
+
 ## Areas for Improvement
 
 While working on this project, I identified several aspects to refine:
 
-### Folder Structure
-- Organize components into better-structured folders.
-- Break down reusable code into smaller components, such as the GitHub sign-in flow.
+### User Management
+I did not add any features to user manager due to overdoing.
+But features I would have added
+- Full User management for all field
+- Add new Users
+- Password reset via email
+- Enable, disable user.
 
 ### Middleware and Routing
 - Refactor `middleware.ts` for improved routing.

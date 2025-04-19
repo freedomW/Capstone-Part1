@@ -169,25 +169,28 @@ export default function SupervisorTable() {
           {supervisors.map((supervisor) => (
             <TableRow key={supervisor.id}>
               <TableCell className="font-medium">{supervisor.name}</TableCell>
-              <TableCell>{supervisor.email}</TableCell>              <TableCell>                <div className="space-y-2">
-                  <MultiSelect
-                    placeholder="Search and select agents..."
-                    options={allAgents?.map(agent => ({
-                      label: `${agent.user.name || 'Unnamed'} (${agent.user.email})`,
-                      value: agent.id,
-                    })) || []}
-                    defaultValue={selectedAgents[supervisor.Agent?.id || ''] || getAssignedAgentIds(supervisor)}
-                    onValueChange={(selectedAgentIds) => 
-                      handleSelectionChange(supervisor.Agent?.id || '', selectedAgentIds)
-                    }
-                    disabled={updatingAgents}
-                  />
+              <TableCell>{supervisor.email}</TableCell>
+                <TableCell>
+                  <div className="space-y-2">
+                    <MultiSelect
+                      placeholder="Search and select agents..."
+                      options={allAgents?.map(agent => ({
+                        label: `${agent.user.name || 'Unnamed'} (${agent.user.email})`,
+                        value: agent.id,
+                      })) || []}
+                      defaultValue={selectedAgents[supervisor.Agent?.id || ''] || getAssignedAgentIds(supervisor)}
+                      onValueChange={(selectedAgentIds) => 
+                        handleSelectionChange(supervisor.Agent?.id || '', selectedAgentIds)
+                      }
+                      disabled={updatingAgents}
+                    />
                 </div>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-      </Table>      <div className="flex justify-between items-center mt-4">
+      </Table>
+      <div className="flex justify-between items-center mt-4">
         <div className="text-sm text-muted-foreground">
           Note: To manage supervisor roles or agent assignments, please use the User Management tab.
         </div>
